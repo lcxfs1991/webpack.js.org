@@ -16,6 +16,7 @@ webpack treats `import()` as a split-point and puts the requested module in a se
 `import()` takes the module name as argument and returns a `Promise`: `import(name) -> Promise`
 
 **index.js**
+
 ```javascript
 function determineDate() {
   import('moment').then(function(moment) {
@@ -27,7 +28,9 @@ function determineDate() {
 
 determineDate();
 ```
+
 T> Keep in mind that `import()` path cannot be fully dynamic (e.g., `import(Math.random())`). Rather either completely static (e.g., `import('./locale/de.json')`) or partially static (e.g., `import('./locale/' + language + '.json')`).
+
 
 ## Promise polyfill
 
@@ -36,6 +39,7 @@ W> `import()` relies on [`Promise`](https://developer.mozilla.org/en-US/docs/Web
 If you use `import()` with older browsers, remember to shim `Promise` using a polyfill such as [es6-promise](https://github.com/stefanpenner/es6-promise) or [promise-polyfill](https://github.com/taylorhakes/promise-polyfill).
 
 In an entry point of your application:
+
 ```javascript
 import Es6Promise from 'es6-promise';
 Es6Promise.polyfill();
@@ -49,6 +53,7 @@ if (!window.Promise) {
 // or ...
 ```
 
+
 ## Usage with Babel
 
 If you want to use `import` with [Babel](http://babeljs.io/), you'll need to install/add the [`syntax-dynamic-import`](http://babeljs.io/docs/plugins/syntax-dynamic-import/) plugin while it's still Stage 3 to get around the parser error. When the proposal is added to the spec this won't be necessary anymore.
@@ -60,6 +65,7 @@ npm install --save moment
 ```
 
 **index-es2015.js**
+
 ```javascript
 function determineDate() {
   import('moment')
@@ -72,6 +78,7 @@ determineDate();
 ```
 
 **webpack.config.js**
+
 ```javascript
 module.exports = {
   entry: './index-es2015.js',
@@ -94,9 +101,11 @@ module.exports = {
 };
 ```
 
-Not using the `syntax-dynamic-import` plugin will fail the build with
+Not using the `syntax-dynamic-import` plugin will fail the build with:
+
 * `Module build failed: SyntaxError: 'import' and 'export' may only appear at the top level`, or
 * `Module build failed: SyntaxError: Unexpected token, expected {`
+
 
 ## Usage with Babel and `async`/`await`
 
@@ -107,6 +116,7 @@ npm install --save-dev babel-plugin-transform-async-to-generator babel-plugin-tr
 ```
 
 **index-es2017.js**
+
 ```javascript
 async function determineDate() {
   const moment = await import('moment');
@@ -117,6 +127,7 @@ determineDate().then(str => console.log(str));
 ```
 
 **webpack.config.js**
+
 ```javascript
 module.exports = {
   entry: './index-es2017.js',
@@ -144,7 +155,8 @@ module.exports = {
 };
 ```
 
-## `import` supersedes `require.ensure`?
+
+## `import` Does Not Supersede `require.ensure`
 
 Good news: Failure to load a chunk can be handled now because they are `Promise` based.
 
@@ -156,14 +168,19 @@ require.ensure([], function(require) {
 }, "custom-chunk-name");
 ```
 
+
 ## `System.import` is deprecated
 
 The use of `System.import` in webpack [did not fit the proposed spec](https://github.com/webpack/webpack/issues/2163), so it was deprecated in [v2.1.0-beta.28](https://github.com/webpack/webpack/releases/tag/v2.1.0-beta.28) in favor of `import()`.
 
+
 ## Examples
+
 * https://github.com/webpack/webpack/tree/master/examples/harmony
 * https://github.com/webpack/webpack/tree/master/examples/code-splitting-harmony
 * https://github.com/webpack/webpack/tree/master/examples/code-splitting-native-import-context
 
+
 ## Weblinks
+
 * [Lazy Loading ES2015 Modules in the Browser](https://dzone.com/articles/lazy-loading-es2015-modules-in-the-browser)

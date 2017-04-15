@@ -11,6 +11,7 @@ In this section, we will discuss how webpack splits code using `require.ensure()
 
 W> `require.ensure` is specific to webpack, see [`import()`](/guides/code-splitting-import) for a proposal for ECMAScript.
 
+
 ## `require.ensure()`
 
 webpack statically parses for `require.ensure()` in the code while building. Any module that is referenced as a dependency or `require()`d within the callback function, will be added to a new chunk. This new chunk is written to an async bundle that is loaded on demand by webpack through jsonp.
@@ -21,14 +22,20 @@ The syntax is as follows:
 require.ensure(dependencies: String[], callback: function(require), chunkName: String)
 ```
 
-#### dependencies
+### dependencies
+
 This is an array of strings where we can declare all the modules that need to be made available before all the code in the callback function can be executed.
 
-#### callback
+
+### callback
+
 This is the callback function that webpack will execute once the dependencies are loaded. An implementation of the `require` function is sent as a parameter to this function. The function body can use this to further `require()` modules it needs for execution.
 
-#### chunkName
+
+### chunkName
+
 The `chunkName` is a name given to the chunk created by this particular `require.ensure()`. By passing the same `chunkName` to various `require.ensure()` calls, we can combine their code into a single chunk, resulting in only one bundle that the browser must load.
+
 
 ## Example
 
@@ -93,7 +100,6 @@ module.exports = function(env) {
         }
     }
 }
-
 ```
 
 T> `output.publicPath` is an important option when using code-splitting, it is used to tell webpack where to load your bundles on-demand, see the [configuration documentation](/configuration/output/#output-publicpath).
@@ -152,6 +158,7 @@ T> We can see the specified **webpack public path** on `__webpack_require__.p` i
 `b.js` and `c.js` are bundled in `0.bundle.js`.
 
 **0.bundle.js**
+
 ```javascript
 webpackJsonp([0],[
 /* 0 */,
@@ -185,13 +192,16 @@ console.log('***** I AM c *****');
 
 Now just add `bundle.js` in your HTML file and open it in your broswer, the `0.bundle.js` will be loaded on demand (from `https://cdn.example.com/assets/0.bundle.js`) by webpack.
 
-**More examples**
+__More examples__
+
 * https://github.com/webpack/webpack/tree/master/examples/code-splitting
 * https://github.com/webpack/webpack/tree/master/examples/named-chunks – illustrates the use of `chunkName`
+
 
 ## Promise polyfill
 
 W> `require.ensure` relies on [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) internally. See [this section](/guides/code-splitting-import#promise-polyfill) for possible polyfills.
+
 
 ## Gotchas for `require.ensure()`
 
@@ -204,6 +214,7 @@ require.ensure([], function(require){
 ```
 
 The above code ensures that a split point is created and `a.js` is bundled separately by webpack.
+
 
 ### Dependencies as Parameter
 
